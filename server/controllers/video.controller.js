@@ -18,7 +18,11 @@ export const getAllVideos = async (req, res) => {
 // Get user's videos
 export const getUserVideos = async (req, res) => {
     try {
-        const userId = req.params.userId || req.user.id;
+        const userId = req.params.userId || (req.user ? req.user.id : null);
+
+        if (!userId) {
+            return sendError(res, 400, 'User ID is required');
+        }
 
         const videos = await Video.find({ author: userId })
             .populate('author', 'name profilePic danceStyle')
