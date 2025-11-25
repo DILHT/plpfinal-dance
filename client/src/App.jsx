@@ -6,10 +6,12 @@ import RoomPreviewPage from './pages/RoomPreviewPage';
 import JoinPage from './pages/JoinPage';
 import DancersPage from './pages/DancersPage';
 import LoginPage from './pages/LoginPage';
-import MindTalkPage from './pages/MindTalkPage';
+// import MindTalkPage from './pages/MindTalkPage';
 import ProfilePage from './pages/ProfilePage';
 import AdminDashboard from './pages/AdminDashboard';
 import VideosPage from './pages/VideosPage';
+import PostForm from './components/mindtalk/PostForm';
+import CommentDialog from './components/mindtalk/CommentDialog';
 
 function App() {
   return (
@@ -21,9 +23,11 @@ function App() {
       <Route path="/dancers" element={<Layout><DancersPage /></Layout>} />
       <Route path="/login" element={<Layout><LoginPage /></Layout>} />
       <Route path="/videos" element={<Layout><VideosPage /></Layout>} />
-      <Route path="/mindtalk" element={<Layout><MindTalkPage /></Layout>} />
+      {/* <Route path="/mindtalk" element={<Layout><MindTalkPage /></Layout>} /> */}
       <Route path="/profile" element={<Layout><ProfilePage /></Layout>} />
       <Route path="/admin" element={<Layout><AdminDashboard /></Layout>} />
+      <Route path="/comment" element={<Layout><CommentDialog/></Layout>} />
+      {/* <Route path='/post' element={<PostForm />} /> */}
     </Routes>
   );
 }

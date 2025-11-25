@@ -80,13 +80,19 @@ export const addReaction = async (req, res) => {
             return sendError(res, 404, 'Post not found');
         }
 
-        // Remove existing reaction from this user
-        post.reactions = post.reactions.filter(
-            r => r.user.toString() !== userId.toString()
+        // Check if user already has a reaction
+        const existingReactionIndex = post.reactions.findIndex(
+            r => r.user.toString() === userId.toString()
         );
 
-        // Add new reaction
-        post.reactions.push({ user: userId, type: type || 'like' });
+        if (existingReactionIndex !== -1) {
+            // User already reacted - remove the reaction (toggle off)
+            post.reactions.splice(existingReactionIndex, 1);
+        } else {
+            // User hasn't reacted - add the reaction (toggle on)
+            post.reactions.push({ user: userId, type: type || 'like' });
+        }
+        
         await post.save();
 
         // Populate the post with user data before sending

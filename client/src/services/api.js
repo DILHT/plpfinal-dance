@@ -1,7 +1,11 @@
 import axios from 'axios';
 
+// Get API URL from environment variable, fallback to relative path for proxy
+const API_URL = import.meta.env.VITE_API_URL || '';
+const baseURL = API_URL ? `${API_URL}/api` : '/api';
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL,
   headers: {
     'Content-Type': 'application/json',
   },

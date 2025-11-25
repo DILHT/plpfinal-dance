@@ -69,7 +69,7 @@ export default function VideosPage() {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-12">
-        <div className="text-center">Loading...</div>
+        <div className="text-center text-gray-600 dark:text-slate-400">Loading...</div>
       </div>
     );
   }
@@ -79,8 +79,8 @@ export default function VideosPage() {
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold mb-2">Dance Videos</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-4xl font-bold mb-2 text-gray-900 dark:text-slate-100">Dance Videos</h1>
+            <p className="text-gray-600 dark:text-slate-400">
               Watch inspiring dance performances from our community
             </p>
           </div>
@@ -92,42 +92,50 @@ export default function VideosPage() {
                   Upload Video
                 </Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700">
                 <DialogHeader>
-                  <DialogTitle>Upload Dance Video</DialogTitle>
-                  <DialogDescription>
+                  <DialogTitle className="text-gray-900 dark:text-slate-100">Upload Dance Video</DialogTitle>
+                  <DialogDescription className="text-gray-600 dark:text-slate-400">
                     Share your dance performance with the community
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
                   <div>
-                    <Label>Title *</Label>
+                    <Label className="text-gray-900 dark:text-slate-100">Title *</Label>
                     <Input
                       value={uploadData.title}
                       onChange={(e) => setUploadData({ ...uploadData, title: e.target.value })}
                       placeholder="Video title"
+                      className="bg-white dark:bg-slate-800 text-gray-900 dark:text-slate-100 border-gray-300 dark:border-slate-600 placeholder:text-gray-400 dark:placeholder:text-slate-400"
                     />
                   </div>
                   <div>
-                    <Label>Dance Style</Label>
+                    <Label className="text-gray-900 dark:text-slate-100">Dance Style</Label>
                     <Input
                       value={uploadData.danceStyle}
                       onChange={(e) => setUploadData({ ...uploadData, danceStyle: e.target.value })}
                       placeholder="e.g., Hip-hop, Contemporary"
+                      className="bg-white dark:bg-slate-800 text-gray-900 dark:text-slate-100 border-gray-300 dark:border-slate-600 placeholder:text-gray-400 dark:placeholder:text-slate-400"
                     />
                   </div>
                   <div>
-                    <Label>Description</Label>
+                    <Label className="text-gray-900 dark:text-slate-100">Description</Label>
                     <Textarea
                       value={uploadData.description}
                       onChange={(e) => setUploadData({ ...uploadData, description: e.target.value })}
                       placeholder="Describe your video..."
                       rows={3}
+                      className="bg-white dark:bg-slate-800 text-gray-900 dark:text-slate-100 border-gray-300 dark:border-slate-600 placeholder:text-gray-400 dark:placeholder:text-slate-400"
                     />
                   </div>
                   <div>
-                    <Label>Video File *</Label>
-                    <Input type="file" accept="video/*" onChange={handleFileChange} />
+                    <Label className="text-gray-900 dark:text-slate-100">Video File *</Label>
+                    <Input 
+                      type="file" 
+                      accept="video/*" 
+                      onChange={handleFileChange}
+                      className="bg-white dark:bg-slate-800 text-gray-900 dark:text-slate-100 border-gray-300 dark:border-slate-600"
+                    />
                   </div>
                   <Button onClick={handleUpload} className="w-full">
                     Upload
@@ -139,34 +147,38 @@ export default function VideosPage() {
         </div>
 
         {videos.length === 0 ? (
-          <Card>
-            <CardContent className="py-12 text-center text-muted-foreground">
-              <Video className="h-12 w-12 mx-auto mb-4 opacity-50" />
+          <Card className="bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700">
+            <CardContent className="py-12 text-center text-gray-600 dark:text-slate-400">
+              <Video className="h-12 w-12 mx-auto mb-4 opacity-50 text-gray-400 dark:text-slate-500" />
               <p>No videos yet. Be the first to share!</p>
             </CardContent>
           </Card>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {videos.map((video) => (
-              <Card key={video._id} className="cursor-pointer" onClick={() => setSelectedVideo(video)}>
+              <Card 
+                key={video._id} 
+                className="cursor-pointer bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow" 
+                onClick={() => setSelectedVideo(video)}
+              >
                 <CardHeader>
-                  <div className="aspect-video bg-muted rounded-lg flex items-center justify-center mb-4">
+                  <div className="aspect-video bg-gray-100 dark:bg-slate-700 rounded-lg flex items-center justify-center mb-4">
                     {video.videoUrl ? (
                       <video src={video.videoUrl} className="w-full h-full object-cover rounded-lg" />
                     ) : (
-                      <Play className="h-12 w-12 text-muted-foreground" />
+                      <Play className="h-12 w-12 text-gray-400 dark:text-slate-500" />
                     )}
                   </div>
-                  <CardTitle className="line-clamp-2">{video.title}</CardTitle>
+                  <CardTitle className="line-clamp-2 text-gray-900 dark:text-slate-100">{video.title}</CardTitle>
                   {video.author && (
-                    <CardDescription>
+                    <CardDescription className="text-gray-600 dark:text-slate-400">
                       By {video.author.name}
                     </CardDescription>
                   )}
                 </CardHeader>
                 {video.description && (
                   <CardContent>
-                    <p className="text-sm text-muted-foreground line-clamp-2">
+                    <p className="text-sm text-gray-600 dark:text-slate-400 line-clamp-2">
                       {video.description}
                     </p>
                   </CardContent>
@@ -178,11 +190,11 @@ export default function VideosPage() {
 
         {selectedVideo && (
           <Dialog open={!!selectedVideo} onOpenChange={() => setSelectedVideo(null)}>
-            <DialogContent className="max-w-4xl">
+            <DialogContent className="max-w-4xl bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700">
               <DialogHeader>
-                <DialogTitle>{selectedVideo.title}</DialogTitle>
+                <DialogTitle className="text-gray-900 dark:text-slate-100">{selectedVideo.title}</DialogTitle>
                 {selectedVideo.author && (
-                  <DialogDescription>
+                  <DialogDescription className="text-gray-600 dark:text-slate-400">
                     By {selectedVideo.author.name}
                   </DialogDescription>
                 )}
@@ -192,7 +204,7 @@ export default function VideosPage() {
                   <video src={selectedVideo.videoUrl} controls className="w-full rounded-lg" />
                 )}
                 {selectedVideo.description && (
-                  <p className="mt-4 text-sm">{selectedVideo.description}</p>
+                  <p className="mt-4 text-sm text-gray-600 dark:text-slate-400">{selectedVideo.description}</p>
                 )}
               </div>
             </DialogContent>

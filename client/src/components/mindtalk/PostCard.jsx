@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Heart, MessageCircle } from 'lucide-react';
 import { format } from 'date-fns';
@@ -17,27 +16,43 @@ const categoryColors = {
 
 export default function PostCard({ post, onReaction, onComment }) {
   const [isReacting, setIsReacting] = useState(false);
+  const [reactionCount, setReactionCount] = useState(post.reactions?.length || 0);
+
+  // Update reaction count when post updates from socket
+  useEffect(() => {
+    setReactionCount(post.reactions?.length || 0);
+  }, [post.reactions]);
 
   const handleReactionClick = async (e) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    console.log('Heart clicked for post:', post._id);
+    
     if (isReacting) return;
+    
+    // Optimistic update
+    setReactionCount(prev => prev + 1);
     setIsReacting(true);
+    
     try {
       await onReaction(post._id, 'like');
+      console.log('Reaction added successfully');
     } catch (error) {
       console.error('Error adding reaction:', error);
+      // Revert optimistic update on error
+      setReactionCount(prev => Math.max(0, prev - 1));
     } finally {
       setIsReacting(false);
     }
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full hover:shadow-md transition-shadow">
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-2 flex-wrap">
               <Badge className={categoryColors[post.category] || categoryColors.general}>
                 {post.category}
               </Badge>
@@ -54,24 +69,28 @@ export default function PostCard({ post, onReaction, onComment }) {
         </div>
       </CardHeader>
       <CardContent>
-        <p className="whitespace-pre-wrap mb-4">{post.text}</p>
-        <div className="flex items-center gap-4">
-          <Button
+        <p className="whitespace-pre-wrap mb-4 text-base leading-relaxed">{post.text}</p>
+        <div className="flex items-center gap-4 pt-2 border-t">
+          {/* Heart/Reaction Button - Native HTML button with large hit area */}
+          <button
             type="button"
-            variant="ghost"
-            size="sm"
             onClick={handleReactionClick}
             disabled={isReacting}
-            className="cursor-pointer hover:bg-accent flex items-center gap-1"
-            style={{ pointerEvents: 'auto' }}
+            className="flex items-center gap-2 min-w-[80px] min-h-[40px] px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            aria-label={`React to post (${reactionCount} reactions)`}
           >
-            <Heart className="h-4 w-4" />
-            <span>{post.reactions?.length || 0}</span>
-          </Button>
+            <Heart 
+              className={`h-5 w-5 transition-colors ${
+                isReacting ? 'text-red-500 animate-pulse' : 'text-gray-600 dark:text-gray-400'
+              }`} 
+            />
+            <span className="font-medium text-sm">{reactionCount}</span>
+          </button>
+          
+          {/* Comment Button - Passed to CommentDialog */}
           <CommentDialog post={post} onComment={onComment} />
         </div>
       </CardContent>
     </Card>
   );
 }
-
